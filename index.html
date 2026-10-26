@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CRI – Clara Recruitment Intelligence</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#eeebe7;--card:#fff;--tx:#111;--mu:#6f6b66;--bd:#d9d4cd;--ac:#111;--ac2:#e2ddd5;--ok:#111;--wa:#8a8378;--er:#a39b8f;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d0d0d;--card:#171717;--tx:#f3f1ed;--mu:#a39f98;--bd:#2d2b28;--ac:#cfc8bd;--ac2:#25231f;--ok:#f3f1ed;--wa:#a39b8f;--er:#7d766b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d0d0d;--card:#171717;--tx:#f3f1ed;--mu:#a39f98;--bd:#2d2b28;--ac:#cfc8bd;--ac2:#25231f;--ok:#f3f1ed;--wa:#a39b8f;--er:#7d766b;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:18px 20px 0;max-width:1100px;margin:auto}h1{font-size:20px;margin:0}header p{margin:2px 0 12px;color:var(--mu);font-size:13px}
+nav{display:flex;gap:6px;overflow-x:auto;border-bottom:1px solid var(--bd)}
+nav button,.sub button{border:0;background:none;color:var(--mu);padding:10px 14px;font:inherit;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent}
+nav button.on{color:var(--ac);border-color:var(--ac);font-weight:600}
+main{max-width:1100px;margin:auto;padding:14px 20px 40px}
+.sub{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}.sub button{border:1px solid var(--bd);border-radius:20px;padding:6px 12px;font-size:13px}.sub button.on{background:var(--ac2);color:var(--ac);border-color:var(--ac)}
+.pane{display:none}.pane.on{display:block}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:12px}
+.card h3{margin:0 0 6px;font-size:15px}.mu{color:var(--mu);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+label{display:block;font-size:12px;color:var(--mu);margin:8px 0 3px}
+input,select,textarea{width:100%;padding:8px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--tx);font:inherit}
+textarea{min-height:110px;resize:vertical}
+.btn{background:var(--ac);color:var(--bg);border:0;border-radius:6px;padding:8px 14px;font:inherit;cursor:pointer;margin-top:10px;margin-right:6px}
+.btn.g{background:var(--ac2);color:var(--ac)}
+pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:10px;font:12.5px/1.45 ui-monospace,Menlo,monospace;margin:6px 0}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:var(--ac2);color:var(--ac);margin-right:4px}
+.tbl{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13.5px}th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--bd)}th{color:var(--mu);font-weight:600}
+mark{background:#cfc8bd;color:#111;border-radius:3px;padding:0 2px}mark.r{background:#ffa8a8}
+.hm td{text-align:center;color:#111;font-weight:600}
+.note{font-size:12px;color:var(--mu);margin:6px 0 12px}
+ul{margin:6px 0;padding-left:20px}
+</style></head><body>
+<header><h1>CRI <span style="font-weight:400;color:var(--mu)">· Clara Recruitment Intelligence</span></h1><p>Market intelligence, sourcing, outreach and comp tools for technical recruiters. <span id="upd">Sample data shown until the daily updater is deployed.</span></p>
+<nav id="nav"></nav></header>
+<main id="main">
+
+<!-- TAB 1 -->
+<section class="pane" data-t="0" data-n="Market Intelligence">
+<div class="sub" data-s></div>
+<div class="sp" data-sn="Live news &amp; macro feed">
+<div id="chips" class="sub"></div><div id="feed"></div>
+</div>
+<div class="sp" data-sn="Layoff &amp; hiring tracker">
+<div class="card"><h3>Engineering job cuts vs. net new open roles (monthly, thousands)</h3><div id="chart"></div><p class="note">Sample series. Source candidates: layoffs trackers, SEC 8-K/10-Q, FRED JOLTS.</p></div>
+<div class="card tbl"><h3>Company movements</h3><table id="moves"></table></div>
+</div>
+<div class="sp" data-sn="Hiring impact summary">
+<div class="card"><h3>Executive summary: what this means for hiring</h3><div id="sum"></div>
+<button class="btn" onclick="cp('talk')">Copy recruiter talking points</button><pre id="talk"></pre></div>
+</div>
+<div class="sp" data-sn="Archive"><div id="arch"></div></div>
+</section>
+
+<!-- TAB 2 -->
+<section class="pane" data-t="1" data-n="Sourcing &amp; Boolean">
+<div class="sub" data-s></div>
+<div class="sp" data-sn="Boolean generator">
+<div class="grid"><div class="card"><h3>From job title</h3>
+<label>Job title</label><input id="bt" value="Senior Backend Engineer">
+<label>Location</label><input id="bl" value="London">
+<label>Seniority</label><select id="bs"><option>Junior</option><option>Mid</option><option selected>Senior</option><option>Staff/Principal</option><option>Lead/Manager</option></select>
+<label>Key skills (comma separated, optional)</label><input id="bk" value="Go, Kubernetes">
+<button class="btn" onclick="genT()">Generate</button></div>
+<div class="card"><h3>From job description</h3><label>Paste JD text</label><textarea id="jd" placeholder="Paste a job description. For PDFs, copy the text out first."></textarea>
+<button class="btn" onclick="genJ()">Extract &amp; build Boolean</button></div></div>
+<div class="card"><h3>Output</h3><div id="bo" class="mu">Generate a string to see results.</div></div>
+</div>
+<div class="sp" data-sn="Skill synonyms &amp; stack decoder">
+<div class="card"><label>Search a skill</label><input id="sq" placeholder="e.g. java, c++, react" oninput="rs()"></div><div id="sk"></div>
+</div>
+<div class="sp" data-sn="JD de-biaser">
+<div class="card"><h3>Inclusive language &amp; requirement inflation scanner</h3>
+<textarea id="dj" placeholder="Paste a JD..."></textarea><button class="btn" onclick="deb()">Scan</button>
+<div id="dr"></div></div>
+</div>
+</section>
+
+<!-- TAB 3 -->
+<section class="pane" data-t="2" data-n="Outreach">
+<div class="sub" data-s></div>
+<div class="sp" data-sn="Market-informed outreach">
+<div class="grid"><div class="card">
+<label>Candidate name</label><input id="on" value="Alex">
+<label>Candidate profile / achievements</label><textarea id="op">Scaled distributed GPU training clusters at a fintech; led migration to Kubernetes.</textarea>
+<label>Role &amp; company</label><input id="or" value="Staff ML Infrastructure Engineer at Acme">
+<label>News hook</label><select id="oh"></select>
+<label>Channel</label><select id="oc"><option>Email</option><option>InMail (short)</option></select>
+<button class="btn" onclick="genO()">Generate</button></div>
+<div class="card"><h3>Draft</h3><pre id="oo">Fill the form and generate.</pre><button class="btn g" onclick="cp('oo')">Copy</button></div></div>
+</div>
+<div class="sp" data-sn="Nurture sequences">
+<div id="seq"></div>
+</div>
+</section>
+
+<!-- TAB 4 -->
+<section class="pane" data-t="3" data-n="Geo &amp; Compensation">
+<div class="sub" data-s></div>
+<div class="sp" data-sn="Salary &amp; rate benchmarks">
+<div class="card"><div class="grid"><div><label>Role</label><select id="sr"></select></div><div><label>Seniority</label><select id="ss"></select></div><div><label>Region</label><select id="sg"></select></div></div>
+<div id="sres"></div></div>
+<div class="card"><h3>Contractor rate calculator</h3><div class="grid"><div><label>Annual base (USD)</label><input id="cb" type="number" value="150000"></div><div><label>Benefits &amp; overhead load %</label><input id="cl" type="number" value="25"></div><div><label>Billable hours / year</label><input id="ch" type="number" value="1800"></div></div>
+<button class="btn" onclick="calc()">Calculate</button><div id="cr"></div></div>
+<p class="note">Illustrative bands built from role base × regional multiplier. Replace with a licensed comp dataset before quoting to clients.</p>
+</div>
+<div class="sp" data-sn="Supply vs. demand">
+<div class="card tbl"><h3>Talent scarcity index (10 = very scarce, 1 = saturated)</h3><table class="hm" id="hm"></table></div>
+<div class="card tbl"><h3>Remote vs. hybrid friction meter</h3><table id="fr"></table></div>
+</div>
+<div class="sp" data-sn="Nearshore &amp; EOR hub">
+<div class="card tbl"><h3>Global tech hub &amp; EOR directory</h3><table id="hub"></table><p class="note">Rates are indicative mid-level contractor ranges. Verify with an EOR provider and local counsel.</p></div>
+</div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const DR=["AI/Automation","Macro/Fed Rates","Restructuring","Geopolitics","Offshoring"];
+let NEWS=[
+{d:0,t:"Hyperscaler lifts CapEx by $5B for GPU clusters",s:"Earnings / 10-Q",b:["Hiring freeze likely in legacy enterprise software","Surge in CUDA, distributed systems and ML infra roles","Infra engineers gain comp leverage"]},
+{d:0,t:"Large SaaS vendor automates tier-1 support with AI agents",s:"Tech press",b:["Support and QA headcount flat to down","Demand rises for applied AI and evals engineers","Reskilling pools appear in the market"]},
+{d:1,t:"Fed holds rates; signals fewer cuts in 2027",s:"FRED / FOMC",b:["Venture-backed startups keep hiring tight","Cash-rich incumbents stay selective","Expect longer offer cycles and stricter budgets"]},
+{d:1,t:"JOLTS: software job openings tick up for second month",s:"FRED",b:["Early sign of recovering demand","Candidate counter-offers return","Move faster on senior hires"]},
+{d:2,t:"Mid-cap fintech cuts 8% of engineering in reorg",s:"8-K filing",b:["Fresh pool of backend and platform talent","Target them within 2–3 weeks of the announcement","Lead with stability and clear roadmap"]},
+{d:3,t:"New export controls reshape advanced-chip supply chains",s:"Reuters",b:["Hardware and firmware teams face planning risk","Compliance-literate engineers in demand","Watch relocation and visa constraints"]},
+{d:4,t:"Three US firms open engineering hubs in Poland and Mexico",s:"Tech press",b:["Nearshore competition for mid-level devs rises","Local salaries climb 5–10%","EOR use grows for fast entry"]},
+{d:4,t:"APAC GCC wave: global firms add Bengaluru capability centers",s:"Industry report",b:["Large scale hiring of platform and data roles","Domestic roles shift toward senior and architecture","Consider follow-the-sun support teams"]}];
+const MOVES=[["Hyperscaler A","Expanding","AI infra, GPU platform","+"],["SaaS Vendor B","Freeze","Legacy enterprise apps","−"],["Fintech C","Layoff (8%)","Backend, mobile","−"],["Startup D","Expanding","Applied AI, evals","+"],["Retailer E","Selective","Data platform only","="]];
+const CUTS=[9,12,8,15,11,7,6,9,5,6,4,5],OPEN=[6,6,7,8,8,9,10,11,12,12,13,14],MON="JFMAMJJASOND".split("");
+const SKILLS={java:{a:["Kotlin","Scala","C#","Go"],w:"Mature JVM language for enterprise back ends.",q:"How does the JVM garbage collector affect latency?"},
+"c++":{a:["Rust","C","Go","Zig"],w:"Low-level systems language used for performance-critical software.",q:"What is RAII and why does it matter?"},
+python:{a:["Julia","R","Go","TypeScript"],w:"General-purpose language, dominant in data and ML.",q:"Difference between a list and a generator?"},
+react:{a:["Vue","Angular","Svelte","Solid"],w:"UI library for building web front ends from components.",q:"When would you use memoization in React?"},
+kubernetes:{a:["Nomad","ECS","OpenShift","Docker Swarm"],w:"Orchestrates containers across many servers.",q:"How does a rolling deploy work, and how do you roll back?"},
+aws:{a:["GCP","Azure"],w:"Largest public cloud provider.",q:"How would you design a highly available service in one region?"},
+terraform:{a:["Pulumi","CloudFormation","OpenTofu","Ansible"],w:"Defines cloud infrastructure as code.",q:"How do you manage state across teams?"},
+pytorch:{a:["TensorFlow","JAX","Keras"],w:"Framework for building and training neural networks.",q:"Explain autograd and when you would detach a tensor."},
+cuda:{a:["ROCm","OpenCL","Triton","Metal"],w:"NVIDIA GPU programming platform.",q:"What limits GPU kernel throughput besides compute?"},
+sql:{a:["PostgreSQL","MySQL","BigQuery","Snowflake"],w:"Query language for relational data.",q:"Explain indexes and when they hurt writes."},
+go:{a:["Rust","Java","Kotlin","Elixir"],w:"Compiled language for fast, concurrent network services.",q:"How do goroutines differ from OS threads?"},
+rust:{a:["C++","Go","Zig"],w:"Memory-safe systems language.",q:"What problem do ownership and borrowing solve?"},
+typescript:{a:["JavaScript","Flow","Dart"],w:"JavaScript with static types.",q:"Difference between interface and type?"},
+spark:{a:["Flink","Beam","Dask","Databricks"],w:"Distributed data processing engine.",q:"What causes a shuffle and how do you reduce it?"}};
+const AGE={kubernetes:12,react:13,rust:11,kotlin:10,terraform:12,pytorch:10,swift:12,flutter:8,"next.js":9,docker:13,svelte:10,go:17};
+const BIAS={"rockstar":"Use 'skilled engineer'","ninja":"Use 'expert'","guru":"Use 'specialist'","dominant":"Use 'leading'","aggressive":"Use 'proactive'","manpower":"Use 'workforce'","work hard, play hard":"Describe real culture","digital native":"Remove – age proxy","young":"Remove – age proxy","competitive":"Soften or define","fast-paced":"Define the actual pace","he ":"Use 'they'","chairman":"Use 'chair'","salesman":"Use 'salesperson'","cutting-edge":"Be specific","passionate":"Describe the work instead"};
+const RG=["US","UK","W. Europe","Poland/Romania","LatAm","India","SE Asia"],RM=[1,.72,.66,.42,.4,.24,.27];
+const ROLES={"Software Engineer":[115,150,190,250,15,10],"ML Engineer":[130,170,220,290,15,25],"DevOps / SRE":[120,155,195,255,12,15],"Data Engineer":[110,145,180,230,12,12]},LV=["Junior","Mid","Senior","Staff"];
+const SCARC=[[8,7,6,5,6,4,5],[9,9,8,7,8,6,7],[7,6,6,5,6,4,5],[5,5,4,4,4,3,3],[3,3,3,3,3,2,2]],SR=["ML / AI Engineer","Platform / SRE","Backend","Frontend","Manual QA"];
+const FR=[["Fully remote",0,0,"Baseline"],["1 day office",8,"+0–2%","Minor friction"],["2 days office",18,"+3–5%","Noticeable"],["3 days office",31,"+6–10%","High friction"],["5 days office",47,"+10–15%","Severe; widens funnel loss"]];
+const HUB=[["Poland","Warsaw / Kraków","$40–65","Low","Strong EU labor protections"],["Romania","Bucharest / Cluj","$35–55","Low","Mature outsourcing sector"],["Mexico","Mexico City / Monterrey","$40–65","Medium","US time-zone overlap"],["Brazil","São Paulo","$35–60","High","Complex payroll and termination rules"],["Argentina","Buenos Aires","$30–55","Medium","Currency and payment volatility"],["Colombia","Medellín / Bogotá","$30–50","Medium","Fast-growing talent pool"],["India","Bengaluru / Hyderabad","$25–45","Medium","Large scale; high attrition"],["Vietnam","Ho Chi Minh City","$22–40","Medium","Rising hub; limited senior pool"]];
+const SEQ={"Passive drip (3 steps)":[["Day 1 – Spark","Hi {name}, I noticed your work on {topic}. We're building something in that space at {co}. Worth a quick look?"],["Day 5 – Value","Sharing a short note on how teams in your area are changing: {trend}. No ask, thought it was relevant."],["Day 12 – Soft close","Last note from me. If timing is ever right, I can send comp range and team details. Happy to stay in touch either way."]],
+"Re-engagement":[["Step 1 – What changed","Hi {name}, it's been a while since we spoke about {role}. Since then {update}. Would you like an update?"],["Step 2 – New role","We have a new opening closer to your interests: {role2}. I thought of you first."],["Step 3 – Close","If now still isn't right, no worries. I'll check back in a few months."]]};
+
+// nav + subtabs
+const panes=[...document.querySelectorAll(".pane")];
+$("nav").innerHTML=panes.map((p,i)=>`<button data-i="${i}">${p.dataset.n}</button>`).join("");
+function show(i,j=0){panes.forEach((p,k)=>p.classList.toggle("on",k==i));[...$("nav").children].forEach((b,k)=>b.classList.toggle("on",k==i));
+const p=panes[i];[...p.querySelectorAll(".sp")].forEach((s,k)=>s.style.display=k==j?"block":"none");[...p.querySelector("[data-s]").children].forEach((b,k)=>b.classList.toggle("on",k==j));}
+panes.forEach((p,i)=>{const sps=[...p.querySelectorAll(".sp")];p.querySelector("[data-s]").innerHTML=sps.map((s,j)=>`<button onclick="show(${i},${j})">${s.dataset.sn}</button>`).join("")});
+$("nav").onclick=e=>{if(e.target.dataset.i!=null){show(+e.target.dataset.i);try{location.hash="t"+e.target.dataset.i}catch(_){}}};
+async function cp(id){try{await navigator.clipboard.writeText($(id).innerText)}catch(_){}}
+
+// news
+let flt=-1;
+function news(){$("chips").innerHTML=[`<button class="${flt<0?'on':''}" onclick="flt=-1;news()">All</button>`,...DR.map((d,i)=>`<button class="${flt==i?'on':''}" onclick="flt=${i};news()">${d}</button>`)].join("");
+$("feed").innerHTML=NEWS.filter(n=>flt<0||n.d==flt).map(n=>`<div class="card"><span class="tag">${DR[n.d]}</span><span class="mu">${n.s}</span><h3>${n.u?`<a href="${n.u}" target="_blank" rel="noopener" style="color:inherit">${n.t}</a>`:n.t}</h3><b class="mu">Why this matters to hiring</b><ul>${n.b.map(x=>`<li>${x}</li>`).join("")}</ul></div>`).join("");}
+news();
+$("sum").innerHTML="<ul><li><b>Demand is shifting, not shrinking:</b> AI infrastructure and applied AI roles are growing while legacy enterprise and support roles flatten.</li><li><b>Rates stay higher for longer:</b> Budgets remain disciplined; expect stricter approvals and longer cycles outside AI.</li><li><b>Talent pools are opening:</b> Restructurings release platform and backend engineers, and nearshore hubs absorb mid-level demand.</li></ul>";
+$("talk").innerText="• AI/GPU CapEx is pulling demand toward infra, CUDA and distributed systems; plan for scarcity and faster offers.\n• Legacy enterprise teams are freezing; widen search to adjacent skills.\n• Recent layoffs create a short window to engage strong backend talent.\n• Higher-for-longer rates mean tight budgets: align on must-haves at intake.\n• Nearshore (Poland, Mexico) is a viable cost lever for mid-level roles.";
+function chart(){const W=640,H=200,m=Math.max(...CUTS,...OPEN),bw=W/12;let s=`<svg viewBox="0 0 ${W} ${H+24}" style="width:100%;max-width:700px">`;
+CUTS.forEach((c,i)=>{const h=c/m*H,o=OPEN[i]/m*H;s+=`<rect x="${i*bw+6}" y="${H-h}" width="${bw/2-6}" height="${h}" fill="var(--er)"/><rect x="${i*bw+bw/2}" y="${H-o}" width="${bw/2-6}" height="${o}" fill="var(--ok)"/><text x="${i*bw+bw/2}" y="${H+16}" text-anchor="middle" font-size="11" fill="var(--mu)">${MON[i]}</text>`});
+$("chart").innerHTML=s+`</svg><div class="mu"><span style="color:var(--er)">■</span> Cuts &nbsp; <span style="color:var(--ok)">■</span> Net new openings</div>`}chart();
+$("moves").innerHTML="<tr><th>Company</th><th>Status</th><th>Area</th></tr>"+MOVES.map(r=>`<tr><td>${r[0]}</td><td>${r[3]} ${r[1]}</td><td>${r[2]}</td></tr>`).join("");
+
+// boolean
+const Q=s=>/\s/.test(s)?`"${s}"`:s,OR=a=>"("+a.map(Q).join(" OR ")+")";
+const TS={engineer:["engineer","developer"],"software engineer":["software engineer","software developer","SWE"],"backend engineer":["backend engineer","back-end engineer","backend developer","server-side engineer"],"frontend engineer":["frontend engineer","front-end engineer","frontend developer","UI engineer"],"data engineer":["data engineer","analytics engineer","ETL developer"],"ml engineer":["machine learning engineer","ML engineer","AI engineer"],"devops engineer":["devops engineer","SRE","site reliability engineer","platform engineer"]};
+const SN={Junior:["junior","associate","entry level"],Mid:["mid","engineer II","intermediate"],Senior:["senior","sr","lead"],"Staff/Principal":["staff","principal","distinguished"],"Lead/Manager":["lead","manager","head of"]};
+function out(rows){$("bo").innerHTML=rows.map((r,i)=>`<b>${r[0]}</b><pre id="bx${i}">${r[1].replace(/</g,"&lt;")}</pre><button class="btn g" onclick="cp('bx${i}')">Copy</button>`).join("")}
+function genT(){let t=$("bt").value.trim(),l=$("bl").value.trim(),sn=$("bs").value,k=$("bk").value.split(",").map(x=>x.trim()).filter(Boolean);
+let base=t.toLowerCase().replace(/^(junior|senior|sr\.?|staff|principal|lead)\s+/,"");let titles=TS[base]||[t,base];titles=[...new Set([t,...titles.map(x=>x)])];
+const sk=k.length?" AND "+k.map(x=>SKILLS[x.toLowerCase()]?OR([x,...SKILLS[x.toLowerCase()].a.slice(0,2)]):Q(x)).join(" AND "):"";
+out([["LinkedIn Recruiter",`${OR(titles)} AND ${OR(SN[sn])}${sk}${l?` AND ${Q(l)}`:""} NOT (recruiter OR "talent acquisition" OR student)`],
+["Google X-ray",`site:linkedin.com/in ${OR(titles)} ${OR(SN[sn])}${k.length?" "+k.map(Q).join(" "):""}${l?` ${Q(l)}`:""} -intitle:"profiles" -inurl:"/dir/"`],
+["GitHub (user search)",`${k.length?k.map(x=>x.toLowerCase()).join(" "):base} ${l?`location:${Q(l)}`:""} type:user followers:>10${k[0]?` language:${k[0].toLowerCase()}`:""}`]])}
+function genJ(){const tx=$("jd").value,low=tx.toLowerCase();if(!tx.trim())return;
+const found=Object.keys(SKILLS).concat(["docker","graphql","kafka","redis","mongodb","node.js","swift","django","react native","tensorflow","airflow"]).filter(s=>new RegExp("(^|[^a-z])"+s.replace(/[+.]/g,"\\$&")+"($|[^a-z+])").test(low));
+const yrs=(tx.match(/(\d+)\+?\s*years/i)||[])[1];
+if(!found.length){$("bo").innerHTML="<span class='mu'>No known skills detected. Try the title builder.</span>";return}
+const must=found.slice(0,3),nice=found.slice(3);
+const must_s=must.map(x=>SKILLS[x]?OR([x,...SKILLS[x].a.slice(0,2)]):Q(x)).join(" AND ");
+const b=`${must_s}${nice.length?" AND "+OR(nice):""}`;
+$("bo").innerHTML=`<p><span class="tag">Detected</span>${found.join(", ")}</p><p class="mu">Must-have (first 3): ${must.join(", ")}${yrs?` · Experience: ${yrs}+ years`:""}</p>`;
+out([["Boolean from JD",b+" NOT (recruiter OR student)"],["Google X-ray",`site:linkedin.com/in ${b} -intitle:"profiles"`]]);
+$("bo").innerHTML=`<p><span class="tag">Detected</span>${found.join(", ")}</p><p class="mu">Must-have: ${must.join(", ")}${yrs?` · Experience: ${yrs}+ yrs`:""}</p>`+$("bo").innerHTML}
+
+// skills
+function rs(){const q=$("sq").value.toLowerCase();$("sk").innerHTML=Object.entries(SKILLS).filter(([k])=>k.includes(q)).map(([k,v])=>`<div class="card"><h3>${k}</h3><p>${v.w}</p><p><b>Adjacent / equivalent:</b> ${v.a.map(a=>`<span class="tag">${a}</span>`).join("")}</p><p class="mu"><b>Screening question:</b> ${v.q}</p></div>`).join("")}rs();
+
+// debias
+function deb(){let tx=$("dj").value,fl=[];if(!tx.trim())return;let h=tx.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+for(const [w,s] of Object.entries(BIAS)){const re=new RegExp("\\b"+w.trim().replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b","gi");if(re.test(h)){h=h.replace(re,m=>`<mark>${m}</mark>`);fl.push([w.trim(),s])}}
+const lines=tx.split("\n");
+lines.forEach(ln=>{const m=ln.match(/(\d+)\+?\s*years?/i);if(!m)return;for(const [t,a] of Object.entries(AGE)){if(new RegExp("\\b"+t.replace(".","\\.")+"\\b","i").test(ln)&&+m[1]>a)fl.push([`${m[1]} yrs ${t}`,`${t} is only ~${a} years old. Reduce the requirement.`])}});
+const wc=tx.split(/\s+/).length;
+$("dr").innerHTML=`<p class="mu">${wc} words${wc>700?" – long; aim for 400–650":""}${(tx.match(/^[-•*]/gm)||[]).length>12?" · Requirement list is long; split must-have vs nice-to-have":""}</p><pre style="font-family:inherit">${h}</pre>`+(fl.length?`<table><tr><th>Flagged</th><th>Suggestion</th></tr>${fl.map(f=>`<tr><td>${f[0]}</td><td>${f[1]}</td></tr>`).join("")}</table>`:"<p style='color:var(--ok)'>No issues found.</p>")}
+
+// outreach
+$("oh").innerHTML=NEWS.map((n,i)=>`<option value="${i}">${n.t}</option>`).join("");
+function genO(){const n=NEWS[$("oh").value],name=$("on").value,p=$("op").value,r=$("or").value,s=$("oc").value[0]=="E";
+const hook=`Given recent news – ${n.t.charAt(0).toLowerCase()+n.t.slice(1)} – I thought of your background: ${p.replace(/\.$/,"")}.`;
+$("oo").innerText=s?`Subject: ${r.split(" at ")[0]} – relevant to your work\n\nHi ${name},\n\n${hook}\n\nWe're hiring a ${r}, and the scope maps directly to what you have done. Impact in this market is shifting fast and I'd value your view even if you're not looking.\n\nOpen to a 15-minute chat this week?\n\nBest,`:`Hi ${name} – ${hook} We're hiring a ${r}. Open to a quick chat?`}
+$("seq").innerHTML=Object.entries(SEQ).map(([k,v],i)=>`<div class="card"><h3>${k}</h3>${v.map((s,j)=>`<b>${s[0]}</b><pre id="q${i}${j}">${s[1]}</pre><button class="btn g" onclick="cp('q${i}${j}')">Copy</button>`).join("")}</div>`).join("");
+
+// comp
+$("sr").innerHTML=Object.keys(ROLES).map(r=>`<option>${r}</option>`).join("");$("ss").innerHTML=LV.map(r=>`<option>${r}</option>`).join("");$("sg").innerHTML=RG.map(r=>`<option>${r}</option>`).join("");
+function comp(){const r=ROLES[$("sr").value],l=LV.indexOf($("ss").value),g=RG.indexOf($("sg").value),b=r[l]*RM[g],f=x=>"$"+Math.round(x)+"k";
+$("sres").innerHTML=`<table><tr><th>Base</th><th>Bonus</th><th>Equity / yr</th><th>Contract hourly</th></tr><tr><td>${f(b*.9)} – ${f(b*1.1)}</td><td>${r[4]}% target</td><td>${f(b*r[5]/100*(l+1))}</td><td>$${Math.round(b*1.25*1000/1800)}/hr</td></tr></table>`}
+["sr","ss","sg"].forEach(i=>$(i).onchange=comp);comp();
+function calc(){const b=+$("cb").value,l=+$("cl").value,h=+$("ch").value;$("cr").innerHTML=`<p>Contractor hourly rate: <b>$${(b*(1+l/100)/h).toFixed(0)}/hr</b> <span class="mu">(excl. agency margin)</span></p>`}calc();
+const col=v=>`hsl(36,10%,${93-v*4}%)`;
+$("hm").innerHTML="<tr><th>Role</th>"+RG.map(r=>`<th style="text-align:center">${r}</th>`).join("")+"</tr>"+SCARC.map((r,i)=>`<tr><td style="text-align:left;color:var(--tx)">${SR[i]}</td>`+r.map(v=>`<td style="background:${col(v)}">${v}</td>`).join("")+"</tr>").join("");
+$("fr").innerHTML="<tr><th>Policy</th><th>Candidate drop-off</th><th>Salary premium</th><th>Note</th></tr>"+FR.map(r=>`<tr><td>${r[0]}</td><td><div style="background:var(--er);height:8px;width:${r[1]*2}px;border-radius:4px;display:inline-block"></div> ${r[1]}%</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join("");
+$("hub").innerHTML="<tr><th>Country</th><th>Hubs</th><th>Dev $/hr</th><th>EOR complexity</th><th>Notes</th></tr>"+HUB.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td><span class="tag" style="color:${r[3]=="High"?"var(--er)":r[3]=="Low"?"var(--ok)":"var(--wa)"}">${r[3]}</span></td><td>${r[4]}</td></tr>`).join("");
+
+fetch("news.json",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{if(!j||!j.items||!j.items.length)return;NEWS=j.items;$("oh").innerHTML=NEWS.map((n,i)=>`<option value="${i}">${n.t}</option>`).join("");news();
+if(j.summary)$("sum").innerHTML="<ul>"+j.summary.map(x=>`<li>${x}</li>`).join("")+"</ul>";if(j.talking)$("talk").innerText=j.talking.join("\n");$("upd").textContent="Live news updated "+new Date(j.updated).toLocaleString();}).catch(()=>{});
+let ARCH=[];
+function showArch(i){const c=$("arch");if(!ARCH.length){c.innerHTML='<div class="card"><p class="mu">The archive fills automatically, one entry per day with highlights and a recruitment-impact summary, once the 30-minute updater is running.</p></div>';return}
+const d=ARCH[i];c.innerHTML='<div class="sub">'+ARCH.slice(0,30).map((x,k)=>`<button class="${k==i?'on':''}" onclick="showArch(${k})">${x.date}</button>`).join("")+'</div><div class="card"><h3>How this day affected tech recruitment</h3><ul>'+d.summary.map(x=>`<li>${x}</li>`).join("")+'</ul></div>'+d.items.map(n=>`<div class="card"><span class="tag">${DR[n.d]}</span><span class="mu">${n.s}${n.at?" · "+n.at:""}</span><h3>${n.u?`<a href="${n.u}" target="_blank" rel="noopener" style="color:inherit">${n.t}</a>`:n.t}</h3><ul>${n.b.map(x=>`<li>${x}</li>`).join("")}</ul></div>`).join("")}
+showArch(0);
+fetch("archive.json",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.days&&j.days.length){ARCH=j.days;showArch(0)}}).catch(()=>{});
+const h=(location.hash.match(/^#t(\d)$/)||[])[1];show(h?+h:0);
+</script></body></html>
